@@ -1,22 +1,42 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
 import ContentHeader from '../common/template/contentHeader'
 import Content from '../common/template/content'
 import ValueBox from '../common/widget/valueBox'
 
-const Dashboard = (props) => {
-    return(
-        <div>
-            <ContentHeader title='Dashboard' subtitle='Inicio' />
-            <Content>
-                <div className='row'>
-                    <ValueBox cols='12 4' color='green' icon='bank' value='R$ 10' text='Total de Créditos' />
-                    <ValueBox cols='12 4' color='red' icon='credit-card' value='R$ 100' text='Total de Débito' />
-                    <ValueBox cols='12 4' color='blue' icon='money' value='R$ 0' text='Valor Consolidado' />
-                </div>
-            </Content>
-        </div>
-    )
+import {getSummary} from './dashboardAction'
+
+class Dashboard extends Component{
+
+    componentWillMount(){
+        this.props.getSummary()
+    }
+
+    render(){
+        const { credit, debt } = this.props.summary
+        return(
+            <div>
+                <ContentHeader title='Dashboard' subtitle='Inicio' />
+                <Content>
+                    <div className='row'>
+                        <ValueBox value={`R$ ${credit}`} cols='12 4' color='green' icon='bank'  text='Total de Créditos' />
+                        <ValueBox value={`R$ ${debt}`} cols='12 4' color='red' icon='credit-card'  text='Total de Débito' />
+                        <ValueBox value={`R$ ${credit - debt}`} cols='12 4' color='blue' icon='money'  text='Valor Consolidado' />
+                    </div>
+                </Content>
+            </div>
+        )
+    }
 }
 
-export default Dashboard
+const mapStateToProps = (state) => ({
+    summary: state.dashboard.summary
+})
+
+const mapDispatchToProps = (dispatch) => (
+    bindActionCreators({getSummary}, dispatch)
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
