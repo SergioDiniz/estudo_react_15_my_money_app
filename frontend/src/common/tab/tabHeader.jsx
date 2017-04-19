@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => (
 
 const mapStateToProps = (state) => {
     return {
-        selected: state.tab.selected
+        tab: state.tab
     }
 }
 
